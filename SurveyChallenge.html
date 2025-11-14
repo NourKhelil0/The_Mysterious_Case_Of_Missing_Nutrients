@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Quest: The Temple of the Balanced Plate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #ffcc00;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .intro {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            line-height: 1.6;
+            text-align: center;
+            border: 2px solid #ffcc00;
+        }
+        
+        .character-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .character {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        
+        .character:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffcc00;
+        }
+        
+        .character.selected {
+            background: rgba(255, 204, 0, 0.2);
+            border-color: #ffcc00;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        }
+        
+        .character-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .score-display {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            border: 2px solid #4CAF50;
+        }
+        
+        .score-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffcc00;
+            margin: 10px 0;
+        }
+        
+        .level {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+            border: 2px solid #4CAF50;
+        }
+        
+        .level.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .level-title {
+            font-size: 1.8rem;
+            color: #4CAF50;
+        }
+        
+        .level-number {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .scene-description {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .boss {
+            background: rgba(220, 20, 60, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid crimson;
+        }
+        
+        .boss-name {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .quest {
+            background: rgba(30, 144, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid dodgerblue;
+        }
+        
+        .quest-title {
+            color: #4dabf7;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .choice {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        
+        .choice:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #4CAF50;
+        }
+        
+        .choice.selected {
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+        }
+        
+        .choice.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+        }
+        
+        .choice.locked:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: transparent;
+            transform: none;
+        }
+        
+        /* Color classes that will be applied after selection */
+        .choice.reward-color {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .choice.punishment-color {
+            border-color: #ff4444;
+            background: rgba(244, 67, 54, 0.1);
+        }
+        
+        .lock-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .result {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid #ffcc00;
+        }
+        
+        .result.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result.reward {
+            border-color: #4CAF50;
+        }
+        
+        .result.punishment {
+            border-color: #ff4444;
+        }
+        
+        .score-change {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .score-positive {
+            background: rgba(76, 175, 80, 0.3);
+            color: #a5d6a7;
+        }
+        
+        .score-negative {
+            background: rgba(244, 67, 54, 0.3);
+            color: #ffab91;
+        }
+        
+        .crystal {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .crystal-icon {
+            font-size: 2rem;
+            color: #ffcc00;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .completion {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+        
+        .completion.active {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .completion h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #ffcc00;
+        }
+        
+        .rank {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .character-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .choices {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nutrition Quest: The Temple of the Balanced Plate</h1>
+        <p class="subtitle">Your mission: Guide Sam through culinary challenges to recover the five lost Crystals of Vitality!</p>
+        
+        <div class="game-area">
+            <div class="intro">
+                <p>Welcome, brave adventurer! Our hero Sam is trapped in a cycle of poor nutrition. Help them battle food monsters, make healthy choices, and collect the Crystals of Vitality to restore balance!</p>
+                <p>First, choose your nutrition drama to begin your personalized adventure:</p>
+            </div>
+            
+            <div class="score-display" id="scoreDisplay" style="display: none;">
+                <h3>Current Score</h3>
+                <div class="score-value" id="scoreValue">100</div>
+                <p>Health Points: <span id="healthPoints">100</span></p>
+                <p>Crystals Collected: <span id="crystalsCollected">0</span>/4</p>
+            </div>
+            
+            <div class="character-selection">
+                <div class="character" data-character="hangry">
+                    <div class="character-icon">💀</div>
+                    <h3>The Hangry Monster</h3>
+                    <p>I turn into a dragon when I skip meals</p>
+                </div>
+                <div class="character" data-character="sugar">
+                    <div class="character-icon">🍬</div>
+                    <h3>Sugar Detective</h3>
+                    <p>I find hidden sugar in everything... and eat it</p>
+                </div>
+                <div class="character" data-character="ghost">
+                    <div class="character-icon">👻</div>
+                    <h3>The Ghost Kitchen</h3>
+                    <p>My stove is just for decoration</p>
+                </div>
+                <div class="character" data-character="analysis">
+                    <div class="character-icon">🤯</div>
+                    <h3>Analysis Paralysis</h3>
+                    <p>Nutrition labels give me brain freeze</p>
+                </div>
+                <div class="character" data-character="cactus">
+                    <div class="character-icon">💧</div>
+                    <h3>The Human Cactus</h3>
+                    <p>I forget water exists</p>
+                </div>
+                <div class="character" data-character="fryday">
+                    <div class="character-icon">🍟</div>
+                    <h3>Fry-day Every Day</h3>
+                    <p>My air fryer is my best friend... forever</p>
+                </div>
+            </div>
+            
+            <!-- Level 1: Different for each character -->
+            <div class="level" id="level1">
+                <div class="level-header">
+                    <h2 class="level-title" id="level1-title">The Morning Crisis</h2>
+                    <div class="level-number">Level 1</div>
+                </div>
+                
+                <div class="scene-description" id="level1-description">
+                    <p>Select a character to begin your adventure!</p>
+                </div>
+                
+                <div class="boss">
+                    <div class="boss-name" id="level1-boss-name">BOSS: Select a Character</div>
+                    <p id="level1-boss-desc">Choose your nutrition drama to see your personalized boss!</p>
+                </div>
+                
+                <div class="quest">
+                    <div class="quest-title">Your Quest:</div>
+                    <p id="level1-quest">Select a character to begin your quest!</p>
+                </div>
+                
+                <div class="choices">
+                    <div class="choice" data-choice-type="reward" data-choice="option1" data-score="20" data-health="10">
+                        <h3 id="level1-choice1-title">Option A</h3>
+                        <p id="level1-choice1-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +20 Points, +10 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="reward" data-choice="option2" data-score="15" data-health="5">
+                        <h3 id="level1-choice2-title">Option B</h3>
+                        <p id="level1-choice2-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +15 Points, +5 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="punishment" data-choice="option3" data-score="-15" data-health="-10">
+                        <h3 id="level1-choice3-title">Option C</h3>
+                        <p id="level1-choice3-desc">Select a character to see your choices</p>
+                        <p><strong>Penalty:</strong> -15 Points, -10 Health</p>
+                    </div>
+                </div>
+                
+                <div class="result" id="result1">
+                    <p>You chose <span id="choice-text1"></span>!</p>
+                    <div class="score-change" id="score-change1"></div>
+                    <p id="result-text1"></p>
+                    <div class="crystal">
+                        <div class="crystal-icon">✨</div>
+                        <div>
+                            <h3 id="level1-crystal">Crystal of Wisdom</h3>
+                            <p id="level1-crystal-desc">This crystal helps you make better choices.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev1" disabled>Previous</button>
+                    <button id="next1">Next Level</button>
+                </div>
+            </div>
+            
+            <!-- Level 2: Different for each character -->
+            <div class="level" id="level2">
+                <div class="level-header">
+                    <h2 class="level-title" id="level2-title">The Midday Challenge</h2>
+                    <div class="level-number">Level 2</div>
+                </div>
+                
+                <div class="scene-description" id="level2-description">
+                    <p>Select a character to begin your adventure!</p>
+                </div>
+                
+                <div class="boss">
+                    <div class="boss-name" id="level2-boss-name">BOSS: Select a Character</div>
+                    <p id="level2-boss-desc">Choose your nutrition drama to see your personalized boss!</p>
+                </div>
+                
+                <div class="quest">
+                    <div class="quest-title">Your Quest:</div>
+                    <p id="level2-quest">Select a character to begin your quest!</p>
+                </div>
+                
+                <div class="choices">
+                    <div class="choice" data-choice-type="reward" data-choice="option1" data-score="25" data-health="15">
+                        <h3 id="level2-choice1-title">Option A</h3>
+                        <p id="level2-choice1-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +25 Points, +15 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="reward" data-choice="option2" data-score="15" data-health="10">
+                        <h3 id="level2-choice2-title">Option B</h3>
+                        <p id="level2-choice2-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +15 Points, +10 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="punishment" data-choice="option3" data-score="-20" data-health="-15">
+                        <h3 id="level2-choice3-title">Option C</h3>
+                        <p id="level2-choice3-desc">Select a character to see your choices</p>
+                        <p><strong>Penalty:</strong> -20 Points, -15 Health</p>
+                    </div>
+                </div>
+                
+                <div class="result" id="result2">
+                    <p>You chose <span id="choice-text2"></span>!</p>
+                    <div class="score-change" id="score-change2"></div>
+                    <p id="result-text2"></p>
+                    <div class="crystal">
+                        <div class="crystal-icon">✨</div>
+                        <div>
+                            <h3 id="level2-crystal">Crystal of Energy</h3>
+                            <p id="level2-crystal-desc">This crystal provides you with sustained energy.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev2">Previous</button>
+                    <button id="next2">Next Level</button>
+                </div>
+            </div>
+            
+            <!-- Level 3: Different for each character -->
+            <div class="level" id="level3">
+                <div class="level-header">
+                    <h2 class="level-title" id="level3-title">The Evening Trial</h2>
+                    <div class="level-number">Level 3</div>
+                </div>
+                
+                <div class="scene-description" id="level3-description">
+                    <p>Select a character to begin your adventure!</p>
+                </div>
+                
+                <div class="boss">
+                    <div class="boss-name" id="level3-boss-name">BOSS: Select a Character</div>
+                    <p id="level3-boss-desc">Choose your nutrition drama to see your personalized boss!</p>
+                </div>
+                
+                <div class="quest">
+                    <div class="quest-title">Your Quest:</div>
+                    <p id="level3-quest">Select a character to begin your quest!</p>
+                </div>
+                
+                <div class="choices">
+                    <div class="choice" data-choice-type="reward" data-choice="option1" data-score="30" data-health="20">
+                        <h3 id="level3-choice1-title">Option A</h3>
+                        <p id="level3-choice1-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +30 Points, +20 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="reward" data-choice="option2" data-score="20" data-health="10">
+                        <h3 id="level3-choice2-title">Option B</h3>
+                        <p id="level3-choice2-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +20 Points, +10 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="punishment" data-choice="option3" data-score="-25" data-health="-20">
+                        <h3 id="level3-choice3-title">Option C</h3>
+                        <p id="level3-choice3-desc">Select a character to see your choices</p>
+                        <p><strong>Penalty:</strong> -25 Points, -20 Health</p>
+                    </div>
+                </div>
+                
+                <div class="result" id="result3">
+                    <p>You chose <span id="choice-text3"></span>!</p>
+                    <div class="score-change" id="score-change3"></div>
+                    <p id="result-text3"></p>
+                    <div class="crystal">
+                        <div class="crystal-icon">✨</div>
+                        <div>
+                            <h3 id="level3-crystal">Crystal of Balance</h3>
+                            <p id="level3-crystal-desc">This crystal helps you maintain balance in your life.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev3">Previous</button>
+                    <button id="next3">Next Level</button>
+                </div>
+            </div>
+            
+            <!-- Level 4: Different for each character -->
+            <div class="level" id="level4">
+                <div class="level-header">
+                    <h2 class="level-title" id="level4-title">The Final Challenge</h2>
+                    <div class="level-number">Final Boss</div>
+                </div>
+                
+                <div class="scene-description" id="level4-description">
+                    <p>Select a character to begin your adventure!</p>
+                </div>
+                
+                <div class="boss">
+                    <div class="boss-name" id="level4-boss-name">BOSS: Select a Character</div>
+                    <p id="level4-boss-desc">Choose your nutrition drama to see your personalized boss!</p>
+                </div>
+                
+                <div class="quest">
+                    <div class="quest-title">Your Quest:</div>
+                    <p id="level4-quest">Select a character to begin your quest!</p>
+                </div>
+                
+                <div class="choices">
+                    <div class="choice" data-choice-type="reward" data-choice="option1" data-score="40" data-health="25">
+                        <h3 id="level4-choice1-title">Option A</h3>
+                        <p id="level4-choice1-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +40 Points, +25 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="reward" data-choice="option2" data-score="30" data-health="15">
+                        <h3 id="level4-choice2-title">Option B</h3>
+                        <p id="level4-choice2-desc">Select a character to see your choices</p>
+                        <p><strong>Reward:</strong> +30 Points, +15 Health</p>
+                    </div>
+                    <div class="choice" data-choice-type="punishment" data-choice="option3" data-score="-30" data-health="-25">
+                        <h3 id="level4-choice3-title">Option C</h3>
+                        <p id="level4-choice3-desc">Select a character to see your choices</p>
+                        <p><strong>Penalty:</strong> -30 Points, -25 Health</p>
+                    </div>
+                </div>
+                
+                <div class="result" id="result4">
+                    <p>You chose <span id="choice-text4"></span>!</p>
+                    <div class="score-change" id="score-change4"></div>
+                    <p id="result-text4"></p>
+                    <div class="crystal">
+                        <div class="crystal-icon">✨</div>
+                        <div>
+                            <h3 id="level4-crystal">Crystal of Mastery</h3>
+                            <p id="level4-crystal-desc">This crystal represents your mastery over nutrition.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev4">Previous</button>
+                    <button id="next4">Complete Quest</button>
+                </div>
+            </div>
+            
+            <!-- Completion Screen -->
+            <div class="completion" id="completion">
+                <h2>🎉 QUEST COMPLETE! 🎉</h2>
+                <p>Sam stands triumphant, all five Crystals of Vitality orbiting around them!</p>
+                
+                <div class="final-score" id="finalScore">0</div>
+                <div class="rank" id="rank">Nutrition Novice</div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">✨</div>
+                        <div>Wise Choices</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">✨</div>
+                        <div>Sustained Energy</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">✨</div>
+                        <div>Mindful Eating</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">✨</div>
+                        <div>Lifestyle Balance</div>
+                    </div>
+                </div>
+                
+                <p>The <strong>Impulse Buyer</strong> has been tamed, the <strong>Sugar Siren</strong> silenced, and the <strong>Weekend Saboteur</strong> defeated!</p>
+                <p>You've mastered nutrition in real-world situations and can maintain healthy habits anywhere!</p>
+                
+                <div class="intro" style="margin-top: 20px;">
+                    <h3>Ready for another adventure?</h3>
+                    <p>What's YOUR biggest nutrition drama? Choose your character for the next quest!</p>
+                    <button id="restart" class="pulse">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game state
+            let currentLevel = 0;
+            let selectedCharacter = null;
+            let score = 100;
+            let health = 100;
+            let crystalsCollected = 0;
+            const levels = ['level1', 'level2', 'level3', 'level4'];
+            
+            // Track choices made in each level
+            const choicesMade = {
+                level1: false,
+                level2: false,
+                level3: false,
+                level4: false
+            };
+            
+            // Character selection
+            const characters = document.querySelectorAll('.character');
+            characters.forEach(character => {
+                character.addEventListener('click', function() {
+                    characters.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedCharacter = this.getAttribute('data-character');
+                    
+                    // Show score display
+                    document.getElementById('scoreDisplay').style.display = 'block';
+                    
+                    // Show first level
+                    showLevel(0);
+                    
+                    // Update level content based on character
+                    updateLevelContent(selectedCharacter);
+                });
+            });
+            
+            // Level navigation
+            document.getElementById('next1').addEventListener('click', () => showLevel(1));
+            document.getElementById('next2').addEventListener('click', () => showLevel(2));
+            document.getElementById('next3').addEventListener('click', () => showLevel(3));
+            document.getElementById('next4').addEventListener('click', showCompletion);
+            
+            document.getElementById('prev2').addEventListener('click', () => showLevel(0));
+            document.getElementById('prev3').addEventListener('click', () => showLevel(1));
+            document.getElementById('prev4').addEventListener('click', () => showLevel(2));
+            
+            // Choice selection
+            document.querySelectorAll('.choice').forEach(choice => {
+                choice.addEventListener('click', function() {
+                    // Check if a choice has already been made in this level
+                    const levelElement = this.closest('.level');
+                    const levelId = levelElement.id;
+                    
+                    if (choicesMade[levelId]) {
+                        return; // Exit if choice already made
+                    }
+                    
+                    // Mark this level as having a choice made
+                    choicesMade[levelId] = true;
+                    
+                    // Get choice type (reward or punishment)
+                    const choiceType = this.getAttribute('data-choice-type');
+                    
+                    // Apply color coding to all choices after selection
+                    const allChoices = levelElement.querySelectorAll('.choice');
+                    allChoices.forEach(c => {
+                        const type = c.getAttribute('data-choice-type');
+                        c.classList.add(type === 'reward' ? 'reward-color' : 'punishment-color');
+                        c.classList.add('locked');
+                        
+                        // Add lock icon
+                        const lockIcon = document.createElement('span');
+                        lockIcon.className = 'lock-icon';
+                        lockIcon.textContent = '🔒';
+                        c.appendChild(lockIcon);
+                    });
+                    
+                    // Mark this choice as selected
+                    this.classList.add('selected');
+                    
+                    const resultElement = levelElement.querySelector('.result');
+                    const choiceText = levelElement.querySelector('.choice-text');
+                    const scoreChangeElement = levelElement.querySelector('.score-change');
+                    const resultTextElement = levelElement.querySelector('#result-text' + (currentLevel + 1));
+                    
+                    // Get score and health changes
+                    const scoreChange = parseInt(this.getAttribute('data-score'));
+                    const healthChange = parseInt(this.getAttribute('data-health'));
+                    
+                    // Update score and health
+                    score += scoreChange;
+                    health += healthChange;
+                    
+                    // Ensure health doesn't go below 0 or above 100
+                    health = Math.max(0, Math.min(100, health));
+                    
+                    // Update crystals collected if it's a reward
+                    if (scoreChange > 0) {
+                        crystalsCollected++;
+                    }
+                    
+                    // Update UI
+                    updateScoreDisplay();
+                    
+                    // Update choice text
+                    if (choiceText) {
+                        choiceText.textContent = this.querySelector('h3').textContent;
+                    }
+                    
+                    // Update score change display
+                    if (scoreChangeElement) {
+                        scoreChangeElement.textContent = (scoreChange > 0 ? '+' : '') + scoreChange + ' Points, ' + 
+                                                       (healthChange > 0 ? '+' : '') + healthChange + ' Health';
+                        scoreChangeElement.className = 'score-change ' + (scoreChange > 0 ? 'score-positive' : 'score-negative');
+                    }
+                    
+                    // Update result text
+                    if (resultTextElement) {
+                        if (scoreChange > 0) {
+                            resultTextElement.textContent = "Excellent choice! You've made a healthy decision and earned rewards.";
+                            resultElement.className = 'result active reward';
+                        } else {
+                            resultTextElement.textContent = "That wasn't the best choice. Your health has suffered, but you can recover!";
+                            resultElement.className = 'result active punishment';
+                        }
+                    }
+                    
+                    // Show result
+                    resultElement.classList.add('active');
+                    
+                    // Enable next button
+                    const nextButton = levelElement.querySelector('.navigation button:last-child');
+                    if (nextButton) {
+                        nextButton.disabled = false;
+                        nextButton.classList.add('pulse');
+                    }
+                });
+            });
+            
+            // Restart game
+            document.getElementById('restart').addEventListener('click', function() {
+                // Reset game state
+                currentLevel = 0;
+                selectedCharacter = null;
+                score = 100;
+                health = 100;
+                crystalsCollected = 0;
+                
+                // Reset choices made
+                for (let level in choicesMade) {
+                    choicesMade[level] = false;
+                }
+                
+                // Hide all levels and completion screen
+                document.querySelectorAll('.level').forEach(level => {
+                    level.classList.remove('active');
+                });
+                document.getElementById('completion').classList.remove('active');
+                
+                // Reset choices UI - remove color classes and lock states
+                document.querySelectorAll('.choice').forEach(choice => {
+                    choice.classList.remove('locked');
+                    choice.classList.remove('selected');
+                    choice.classList.remove('reward-color');
+                    choice.classList.remove('punishment-color');
+                    const lockIcon = choice.querySelector('.lock-icon');
+                    if (lockIcon) {
+                        lockIcon.remove();
+                    }
+                });
+                
+                // Reset results
+                document.querySelectorAll('.result').forEach(result => {
+                    result.classList.remove('active');
+                    result.classList.remove('reward');
+                    result.classList.remove('punishment');
+                });
+                
+                // Reset character selection
+                characters.forEach(c => c.classList.remove('selected'));
+                
+                // Hide score display
+                document.getElementById('scoreDisplay').style.display = 'none';
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            });
+            
+            // Show specific level
+            function showLevel(levelIndex) {
+                // Hide all levels
+                document.querySelectorAll('.level').forEach(level => {
+                    level.classList.remove('active');
+                });
+                
+                // Show selected level
+                document.getElementById(levels[levelIndex]).classList.add('active');
+                
+                // Update current level
+                currentLevel = levelIndex;
+                
+                // Scroll to top of level
+                document.getElementById(levels[levelIndex]).scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Show completion screen
+            function showCompletion() {
+                // Hide all levels
+                document.querySelectorAll('.level').forEach(level => {
+                    level.classList.remove('active');
+                });
+                
+                // Calculate final rank
+                let rank = "Nutrition Novice";
+                if (score >= 200) rank = "Master Nutritionist";
+                else if (score >= 150) rank = "Health Hero";
+                else if (score >= 100) rank = "Balanced Eater";
+                
+                // Update completion screen
+                document.getElementById('finalScore').textContent = score + " Points";
+                document.getElementById('rank').textContent = rank;
+                
+                // Show completion screen
+                document.getElementById('completion').classList.add('active');
+                
+                // Scroll to completion screen
+                document.getElementById('completion').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Update score display
+            function updateScoreDisplay() {
+                document.getElementById('scoreValue').textContent = score;
+                document.getElementById('healthPoints').textContent = health;
+                document.getElementById('crystalsCollected').textContent = crystalsCollected;
+            }
+            
+            // Update level content based on selected character
+            function updateLevelContent(character) {
+                // Define character-specific content for all levels
+                const characterContent = {
+                    'hangry': {
+                        level1: {
+                            title: "The Breakfast Battle",
+                            description: "You wake up late with only 10 minutes before work. Your stomach is already growling, and you can feel the Hangry Monster stirring within.",
+                            boss: "💀 BOSS: The Hangry Dragon",
+                            bossDesc: "A fiery beast that emerges when blood sugar drops too low, breathing flames of irritability.",
+                            quest: "Find a quick breakfast that will keep the Hangry Dragon at bay until lunch.",
+                            choice1: {
+                                title: "A) Protein-Packed Smoothie",
+                                desc: "Blend Greek yogurt, banana, and peanut butter for sustained energy."
+                            },
+                            choice2: {
+                                title: "B) Overnight Oats Grab",
+                                desc: "Grab the oats you prepared last night with nuts and berries."
+                            },
+                            choice3: {
+                                title: "C) Skip Breakfast",
+                                desc: "Just drink coffee and hope you don't snap at coworkers before lunch."
+                            },
+                            crystal: "Crystal of Steady Energy",
+                            crystalDesc: "This crystal helps maintain stable blood sugar levels throughout the day."
+                        },
+                        level2: {
+                            title: "The Mid-Morning Monster",
+                            description: "It's 10:30 AM and your stomach is roaring. The vending machine is calling your name with its sugary promises.",
+                            boss: "🍫 BOSS: The Snack Siren",
+                            bossDesc: "A temptress that makes processed snacks seem like the perfect solution to hunger pangs.",
+                            quest: "Choose a mid-morning snack that will satisfy without causing an energy crash.",
+                            choice1: {
+                                title: "A) Apple with Almond Butter",
+                                desc: "Fiber and protein combo for lasting satisfaction."
+                            },
+                            choice2: {
+                                title: "B) Handful of Nuts and Cheese",
+                                desc: "Protein and fat to keep you full until lunch."
+                            },
+                            choice3: {
+                                title: "C) Candy Bar and Soda",
+                                desc: "Quick sugar rush followed by inevitable crash and increased hunger."
+                            },
+                            crystal: "Crystal of Satiety",
+                            crystalDesc: "This crystal helps you feel satisfied and full between meals."
+                        },
+                        level3: {
+                            title: "The Lunchtime Dilemma",
+                            description: "Lunchtime arrives and you're ravenous. The office cafeteria offers both healthy options and comfort food.",
+                            boss: "🍔 BOSS: The Comfort Food Colossus",
+                            bossDesc: "A giant that makes heavy, carb-loaded meals seem like the only way to satisfy extreme hunger.",
+                            quest: "Select a lunch that will fill you up without making you sluggish for the afternoon.",
+                            choice1: {
+                                title: "A) Grilled Chicken Salad",
+                                desc: "Lean protein with plenty of vegetables for nutrients and fiber."
+                            },
+                            choice2: {
+                                title: "B) Turkey Sandwich with Veggies",
+                                desc: "Balanced meal with protein, carbs, and vegetables."
+                            },
+                            choice3: {
+                                title: "C) Double Cheeseburger and Fries",
+                                desc: "Heavy meal that will leave you sleepy and unsatisfied later."
+                            },
+                            crystal: "Crystal of Mindful Fullness",
+                            crystalDesc: "This crystal helps you recognize when you're truly full and satisfied."
+                        },
+                        level4: {
+                            title: "The Dinner Decision",
+                            description: "After a long day, you're exhausted and famished. The temptation to order greasy takeout is overwhelming.",
+                            boss: "🍕 BOSS: The Takeout Titan",
+                            bossDesc: "A massive creature that makes delivery food seem like the only option when you're tired and hungry.",
+                            quest: "Prepare or choose a dinner that will truly nourish you after a long day.",
+                            choice1: {
+                                title: "A) Prepped Meal from Sunday",
+                                desc: "Heat up the balanced meal you prepared earlier in the week."
+                            },
+                            choice2: {
+                                title: "B) Quick Stir Fry",
+                                desc: "Sauté vegetables with protein for a fast, healthy meal."
+                            },
+                            choice3: {
+                                title: "C) Pizza and Wings Feast",
+                                desc: "Order enough food for three people and eat it all in one sitting."
+                            },
+                            crystal: "Crystal of Nourishment",
+                            crystalDesc: "This crystal ensures your meals truly nourish your body and mind."
+                        }
+                    },
+                    'sugar': {
+                        level1: {
+                            title: "The Sweet Breakfast Trap",
+                            description: "Morning cereal, flavored yogurt, and pastries all call to you with their hidden sugars.",
+                            boss: "🍬 BOSS: The Sugar Gremlin",
+                            bossDesc: "A mischievous creature that hides sugar in breakfast foods and whispers sweet temptations.",
+                            quest: "Identify and avoid hidden sugars in your morning meal.",
+                            choice1: {
+                                title: "A) Plain Greek Yogurt with Berries",
+                                desc: "Natural sweetness without added sugars."
+                            },
+                            choice2: {
+                                title: "B) Whole Grain Toast with Avocado",
+                                desc: "Savory option with healthy fats and fiber."
+                            },
+                            choice3: {
+                                title: "C) Sugary Cereal and Sweetened Juice",
+                                desc: "Breakfast that's basically dessert in disguise."
+                            },
+                            crystal: "Crystal of Sugar Awareness",
+                            crystalDesc: "This crystal helps you identify hidden sugars in foods."
+                        },
+                        level2: {
+                            title: "The Afternoon Slump",
+                            description: "3 PM energy crash hits hard. Your brain is screaming for a sugar rush to power through the rest of the workday.",
+                            boss: "☕ BOSS: The Caramel Cloud",
+                            bossDesc: "A fluffy deceiver that makes sugary coffee drinks seem like necessary energy boosts.",
+                            quest: "Find energy without the sugar crash that follows sweet treats.",
+                            choice1: {
+                                title: "A) Green Tea and Walnuts",
+                                desc: "Gentle caffeine with protein and healthy fats."
+                            },
+                            choice2: {
+                                title: "B) Apple with Peanut Butter",
+                                desc: "Natural sugars balanced with protein and fat."
+                            },
+                            choice3: {
+                                title: "C) Caramel Frappuccino and Cookie",
+                                desc: "Sugar bomb that guarantees a crash in an hour."
+                            },
+                            crystal: "Crystal of Sustained Energy",
+                            crystalDesc: "This crystal provides steady energy without sugar crashes."
+                        },
+                        level3: {
+                            title: "The Dessert Temptation",
+                            description: "After dinner, your sweet tooth is calling. The freezer is full of ice cream and the pantry has cookies.",
+                            boss: "🎂 BOSS: The Dessert Demon",
+                            bossDesc: "A tempting creature that makes you believe every meal needs a sweet ending.",
+                            quest: "Satisfy your sweet craving without derailing your nutrition goals.",
+                            choice1: {
+                                title: "A) Dark Chocolate Square",
+                                desc: "Small portion of high-quality chocolate with less sugar."
+                            },
+                            choice2: {
+                                title: "B) Berry Parfait",
+                                desc: "Layers of Greek yogurt and fresh berries."
+                            },
+                            choice3: {
+                                title: "C) Ice Cream Sundae",
+                                desc: "Multiple scoops with all the toppings until you feel sick."
+                            },
+                            crystal: "Crystal of Moderation",
+                            crystalDesc: "This crystal helps you enjoy sweets in sensible portions."
+                        },
+                        level4: {
+                            title: "The Sugar-Free Challenge",
+                            description: "A weekend social event means sugary drinks, desserts, and snacks everywhere you look.",
+                            boss: "🧁 BOSS: The Party Platter Phantom",
+                            bossDesc: "A ghostly figure that fills party tables with endless sugary treats.",
+                            quest: "Navigate the social event without consuming your weight in sugar.",
+                            choice1: {
+                                title: "A) Club Soda with Lime",
+                                desc: "Refreshing drink that looks festive without sugar."
+                            },
+                            choice2: {
+                                title: "B) Single Small Dessert",
+                                desc: "Choose one favorite treat and savor it mindfully."
+                            },
+                            choice3: {
+                                title: "C) Sample Everything",
+                                desc: "Try every sugary offering multiple times because 'it's a special occasion'."
+                            },
+                            crystal: "Crystal of Social Balance",
+                            crystalDesc: "This crystal helps you enjoy social events without sugar overload."
+                        }
+                    },
+                    'ghost': {
+                        level1: {
+                            title: "The Empty Kitchen",
+                            description: "Your kitchen counters are pristine, but the fridge contains only condiments and expired yogurt. Cooking feels impossible.",
+                            boss: "👻 BOSS: The Takeout Temptress",
+                            bossDesc: "A spectral figure that materializes with food delivery apps already open on your phone.",
+                            quest: "Stock your kitchen with basics for simple, healthy meals.",
+                            choice1: {
+                                title: "A) Grocery Run for Staples",
+                                desc: "Buy eggs, frozen veggies, canned beans, and whole grains."
+                            },
+                            choice2: {
+                                title: "B) Meal Kit Delivery",
+                                desc: "Subscribe to a service that sends pre-portioned ingredients."
+                            },
+                            choice3: {
+                                title: "C) Order Pizza... Again",
+                                desc: "It's easier than dealing with grocery shopping and cooking."
+                            },
+                            crystal: "Crystal of Kitchen Confidence",
+                            crystalDesc: "This crystal gives you the confidence to stock and use your kitchen."
+                        },
+                        level2: {
+                            title: "The First Meal",
+                            description: "You have ingredients but no motivation. The couch is calling louder than the stove.",
+                            boss: "📱 BOSS: The Delivery Demon",
+                            bossDesc: "A digital devil that makes ordering food seem easier than cooking.",
+                            quest: "Prepare your first simple meal using actual kitchen equipment.",
+                            choice1: {
+                                title: "A) 10-Minute Stir Fry",
+                                desc: "Sauté frozen veggies with protein and sauce."
+                            },
+                            choice2: {
+                                title: "B) Sheet Pan Meal",
+                                desc: "Roast vegetables and protein together with minimal cleanup."
+                            },
+                            choice3: {
+                                title: "C) Microwave Dinner",
+                                desc: "Processed meal that will leave you unsatisfied and hungry later."
+                            },
+                            crystal: "Crystal of Culinary Courage",
+                            crystalDesc: "This crystal gives you the courage to cook simple meals."
+                        },
+                        level3: {
+                            title: "The Recipe Challenge",
+                            description: "You're ready to try an actual recipe, but the instructions seem complicated and intimidating.",
+                            boss: "📖 BOSS: The Complicated Cookbook",
+                            bossDesc: "A sentient recipe book that makes simple dishes seem impossibly complex.",
+                            quest: "Successfully follow a recipe to create a balanced homemade meal.",
+                            choice1: {
+                                title: "A) One-Pot Pasta Dish",
+                                desc: "Simple recipe where everything cooks together in one pot."
+                            },
+                            choice2: {
+                                title: "B) Slow Cooker Meal",
+                                desc: "Just combine ingredients and let it cook while you do other things."
+                            },
+                            choice3: {
+                                title: "C) Order Gourmet Takeout",
+                                desc: "Tell yourself it's basically the same as cooking but without the work."
+                            },
+                            crystal: "Crystal of Recipe Mastery",
+                            crystalDesc: "This crystal helps you understand and follow recipes successfully."
+                        },
+                        level4: {
+                            title: "The Dinner Party",
+                            description: "Friends are coming over for dinner. The pressure to cook for others is triggering your ghost kitchen tendencies.",
+                            boss: "🍽️ BOSS: The Hosting Horror",
+                            bossDesc: "A monster that amplifies anxiety about cooking for other people.",
+                            quest: "Prepare a simple but impressive meal for your friends.",
+                            choice1: {
+                                title: "A) Taco Bar",
+                                desc: "Set out ingredients and let everyone build their own tacos."
+                            },
+                            choice2: {
+                                title: "B) Pre-made Appetizers + Simple Main",
+                                desc: "Balance store-bought items with one homemade dish."
+                            },
+                            choice3: {
+                                title: "C) Order Catering",
+                                desc: "Pretend you cooked it all yourself and feel guilty about the deception."
+                            },
+                            crystal: "Crystal of Hospitality",
+                            crystalDesc: "This crystal helps you enjoy cooking for and hosting others."
+                        }
+                    },
+                    'analysis': {
+                        level1: {
+                            title: "The Cereal Aisle",
+                            description: "You're staring at 50 different cereal options. Nutrition labels swim before your eyes with percentages, grams, and ingredients.",
+                            boss: "📊 BOSS: The Label Labyrinth",
+                            bossDesc: "A maze of numbers and percentages that confuses and overwhelms.",
+                            quest: "Choose a healthy cereal without getting lost in analysis paralysis.",
+                            choice1: {
+                                title: "A) Simple Whole Grain Pick",
+                                desc: "Choose cereal with <5g sugar and >5g fiber per serving."
+                            },
+                            choice2: {
+                                title: "B) Ask Store Employee",
+                                desc: "Get a recommendation from someone knowledgeable."
+                            },
+                            choice3: {
+                                title: "C) Give Up and Buy Cookies",
+                                desc: "Decide all cereal is bad and opt for obvious junk food instead."
+                            },
+                            crystal: "Crystal of Simplified Choices",
+                            crystalDesc: "This crystal helps you make decisions without overanalyzing."
+                        },
+                        level2: {
+                            title: "The Restaurant Menu",
+                            description: "You're at a restaurant with a massive menu. Every dish has complex descriptions and no clear nutrition information.",
+                            boss: "🍽️ BOSS: The Menu Mystifier",
+                            bossDesc: "A trickster that hides calories and ingredients in fancy descriptions.",
+                            quest: "Order a healthy meal without needing a nutrition facts panel.",
+                            choice1: {
+                                title: "A) Grilled Protein + Vegetables",
+                                desc: "Simple preparation that's usually a safe bet."
+                            },
+                            choice2: {
+                                title: "B) Ask Server for Recommendations",
+                                desc: "Get guidance from someone familiar with the menu."
+                            },
+                            choice3: {
+                                title: "C) Order Everything That Sounds Healthy",
+                                desc: "Over-research then panic-order multiple dishes."
+                            },
+                            crystal: "Crystal of Intuitive Eating",
+                            crystalDesc: "This crystal helps you choose foods that feel right without overthinking."
+                        },
+                        level3: {
+                            title: "The Supplement Store",
+                            description: "You're surrounded by vitamins, powders, and supplements with bold claims and complicated ingredient lists.",
+                            boss: "💊 BOSS: The Supplement Sphinx",
+                            bossDesc: "A mysterious figure that speaks in riddles about bioavailability and synergistic formulas.",
+                            quest: "Choose a simple multivitamin without falling down the research rabbit hole.",
+                            choice1: {
+                                title: "A) Basic Multivitamin",
+                                desc: "Choose a reputable brand with standard vitamins and minerals."
+                            },
+                            choice2: {
+                                title: "B) Ask Pharmacist for Advice",
+                                desc: "Get professional guidance rather than endless online research."
+                            },
+                            choice3: {
+                                title: "C) Buy Everything 'Essential'",
+                                desc: "Purchase dozens of supplements 'just in case' they might help."
+                            },
+                            crystal: "Crystal of Practical Wisdom",
+                            crystalDesc: "This crystal helps you make practical health decisions."
+                        },
+                        level4: {
+                            title: "The Diet Decision",
+                            description: "Friends recommend keto, paleo, intermittent fasting, and veganism. Each has complex rules and conflicting evidence.",
+                            boss: "📚 BOSS: The Diet Doctrine",
+                            bossDesc: "A rigid system of rules and restrictions that promises perfect health.",
+                            quest: "Choose an eating approach that works for you without extreme analysis.",
+                            choice1: {
+                                title: "A) Balanced Plate Method",
+                                desc: "Simple approach: fill half your plate with vegetables, quarter with protein, quarter with carbs."
+                            },
+                            choice2: {
+                                title: "B) Mindful Eating Practice",
+                                desc: "Focus on hunger cues and enjoyment rather than strict rules."
+                            },
+                            choice3: {
+                                title: "C) Try All Diets Simultaneously",
+                                desc: "Attempt to follow multiple conflicting eating plans at once."
+                            },
+                            crystal: "Crystal of Nutritional Peace",
+                            crystalDesc: "This crystal brings peace to your relationship with food and nutrition."
+                        }
+                    },
+                    'cactus': {
+                        level1: {
+                            title: "The Morning Dehydration",
+                            description: "You wake up feeling parched but reach for coffee instead of water. By mid-morning, you have a headache and can't concentrate.",
+                            boss: "🏜️ BOSS: The Desert Dryness",
+                            bossDesc: "A arid force that makes you forget your body's need for water.",
+                            quest: "Remember to drink water first thing in the morning.",
+                            choice1: {
+                                title: "A) Glass Before Coffee",
+                                desc: "Drink a full glass of water before having your morning coffee."
+                            },
+                            choice2: {
+                                title: "B) Water Bottle on Nightstand",
+                                desc: "Keep water by your bed to drink immediately upon waking."
+                            },
+                            choice3: {
+                                title: "C) More Coffee",
+                                desc: "Caffeinate through the dehydration symptoms."
+                            },
+                            crystal: "Crystal of Hydration Memory",
+                            crystalDesc: "This crystal helps you remember to drink water throughout the day."
+                        },
+                        level2: {
+                            title: "The Workday Drought",
+                            description: "Hours pass at your desk without a single sip of water. You're focused on work and completely forget to hydrate.",
+                            boss: "💻 BOSS: The Screen Sip-Stealer",
+                            bossDesc: "A digital demon that absorbs all your attention, making you forget basic bodily needs.",
+                            quest: "Implement a system to remember water during work hours.",
+                            choice1: {
+                                title: "A) Hourly Phone Reminder",
+                                desc: "Set recurring alerts to drink water every hour."
+                            },
+                            choice2: {
+                                title: "B) Marked Water Bottle",
+                                desc: "Use a bottle with time markers to track consumption."
+                            },
+                            choice3: {
+                                title: "C) Drink When Thirsty",
+                                desc: "Rely on thirst signals, which means drinking far too little."
+                            },
+                            crystal: "Crystal of Consistent Hydration",
+                            crystalDesc: "This crystal helps you maintain steady hydration throughout the day."
+                        },
+                        level3: {
+                            title: "The Exercise Evaporation",
+                            description: "You finish a workout drenched in sweat but don't replenish fluids. Later, you wonder why you have muscle cramps and fatigue.",
+                            boss: "💦 BOSS: The Sweat Sprite",
+                            bossDesc: "A mischievous spirit that makes you forget how much fluid you lose during exercise.",
+                            quest: "Properly hydrate before, during, and after physical activity.",
+                            choice1: {
+                                title: "A) Pre- and Post-Workout Water",
+                                desc: "Drink before exercising and replenish systematically afterward."
+                            },
+                            choice2: {
+                                title: "B) Electrolyte Beverage",
+                                desc: "Use a balanced sports drink for longer or more intense workouts."
+                            },
+                            choice3: {
+                                title: "C) Chug When Exhausted",
+                                desc: "Wait until you're completely depleted then drink too much too fast."
+                            },
+                            crystal: "Crystal of Active Hydration",
+                            crystalDesc: "This crystal ensures you hydrate properly around physical activity."
+                        },
+                        level4: {
+                            title: "The Social Dry Spell",
+                            description: "At a party or restaurant, you drink alcoholic or sugary beverages without any water. The next day you feel terrible.",
+                            boss: "🥂 BOSS: The Dehydration Deceiver",
+                            bossDesc: "A charming trickster that makes festive drinks seem hydrating when they're actually dehydrating.",
+                            quest: "Balance festive drinks with proper hydration in social situations.",
+                            choice1: {
+                                title: "A) Water Between Drinks",
+                                desc: "Alternate alcoholic beverages with glasses of water."
+                            },
+                            choice2: {
+                                title: "B) Sparkling Water with Lime",
+                                desc: "Enjoy a festive-looking non-alcoholic option."
+                            },
+                            choice3: {
+                                title: "C) Drink Whatever's Offered",
+                                desc: "Accept every beverage offered without considering hydration."
+                            },
+                            crystal: "Crystal of Social Hydration",
+                            crystalDesc: "This crystal helps you stay hydrated in any social situation."
+                        }
+                    },
+                    'fryday': {
+                        level1: {
+                            title: "The Breakfast Fry-Up",
+                            description: "Your air fryer beckons with the promise of quick, crispy breakfast foods. But not everything should be air-fried.",
+                            boss: "🍟 BOSS: The Crispy Craving",
+                            bossDesc: "A sizzling temptation that makes everything seem better when it's crispy and fried.",
+                            quest: "Prepare a balanced breakfast using your air fryer appropriately.",
+                            choice1: {
+                                title: "A) Air-Fried Egg & Veggie Cups",
+                                desc: "Use the air fryer for a protein and vegetable-based breakfast."
+                            },
+                            choice2: {
+                                title: "B) Oatmeal with Fresh Fruit",
+                                desc: "Recognize that some foods don't need air frying."
+                            },
+                            choice3: {
+                                title: "C) Air-Fried Pastries",
+                                desc: "Turn breakfast into dessert because everything tastes better crispy."
+                            },
+                            crystal: "Crystal of Balanced Cooking",
+                            crystalDesc: "This crystal helps you use kitchen tools in balanced ways."
+                        },
+                        level2: {
+                            title: "The Lunchtime Temptation",
+                            description: "Leftover pizza, frozen snacks, and pre-made foods all call to be air-fried for lunch. The convenience is undeniable.",
+                            boss: "❄️ BOSS: The Frozen Food Fiend",
+                            bossDesc: "A chilly creature that makes processed frozen foods seem like good lunch options.",
+                            quest: "Create a healthy lunch using your air fryer without relying on processed foods.",
+                            choice1: {
+                                title: "A) Air-Fried Chicken & Veggies",
+                                desc: "Use the air fryer to cook fresh ingredients quickly."
+                            },
+                            choice2: {
+                                title: "B) Large Salad with Grilled Chicken",
+                                desc: "Balance air-fried elements with fresh, raw foods."
+                            },
+                            choice3: {
+                                title: "C) Multiple Frozen Snacks",
+                                desc: "Air fry an assortment of processed foods because it's easy."
+                            },
+                            crystal: "Crystal of Whole Food Preparation",
+                            crystalDesc: "This crystal encourages cooking with fresh, whole ingredients."
+                        },
+                        level3: {
+                            title: "The Dinner Dilemma",
+                            description: "You could cook a balanced meal, but the air fryer makes frozen fries, nuggets, and apps so easy and appealing.",
+                            boss: "🔄 BOSS: The Convenience Cyclone",
+                            bossDesc: "A whirlwind that spins you toward the easiest cooking option regardless of nutrition.",
+                            quest: "Prepare a complete dinner using your air fryer as one component, not the main event.",
+                            choice1: {
+                                title: "A) Air-Fried Salmon + Quinoa + Salad",
+                                desc: "Use the air fryer for the protein but prepare balanced sides."
+                            },
+                            choice2: {
+                                title: "B) Sheet Pan Meal with Air-Fried Element",
+                                desc: "Combine air frying with other cooking methods."
+                            },
+                            choice3: {
+                                title: "C) All-Air-Fried Feast",
+                                desc: "Cook every component in the air fryer regardless of appropriateness."
+                            },
+                            crystal: "Crystal of Culinary Diversity",
+                            crystalDesc: "This crystal helps you use various cooking methods for balanced meals."
+                        },
+                        level4: {
+                            title: "The Social Gathering",
+                            description: "Friends are coming over and expect your famous air-fried creations. The pressure to make everything crispy is intense.",
+                            boss: "👨‍🍳 BOSS: The One-Tool Chef",
+                            bossDesc: "An identity that makes you believe you can only cook with your air fryer.",
+                            quest: "Host friends with a varied menu that doesn't rely entirely on air frying.",
+                            choice1: {
+                                title: "A) Mixed Appetizer Spread",
+                                desc: "Include some air-fried items alongside fresh and other prepared foods."
+                            },
+                            choice2: {
+                                title: "B) Potluck Style",
+                                desc: "Ask friends to bring dishes so the meal has variety."
+                            },
+                            choice3: {
+                                title: "C) All-Air-Fried Extravaganza",
+                                desc: "Serve multiple courses all prepared in the air fryer."
+                            },
+                            crystal: "Crystal of Versatile Cooking",
+                            crystalDesc: "This crystal expands your cooking abilities beyond a single tool."
+                        }
+                    }
+                };
+                
+                // Update content for all levels if character exists
+                if (characterContent[character]) {
+                    for (let i = 1; i <= 4; i++) {
+                        const levelData = characterContent[character]['level' + i];
+                        if (levelData) {
+                            // Update level title and description
+                            document.getElementById('level' + i + '-title').textContent = levelData.title;
+                            document.getElementById('level' + i + '-description').textContent = levelData.description;
+                            
+                            // Update boss information
+                            document.getElementById('level' + i + '-boss-name').textContent = levelData.boss;
+                            document.getElementById('level' + i + '-boss-desc').textContent = levelData.bossDesc;
+                            
+                            // Update quest
+                            document.getElementById('level' + i + '-quest').textContent = levelData.quest;
+                            
+                            // Update choices
+                            document.getElementById('level' + i + '-choice1-title').textContent = levelData.choice1.title;
+                            document.getElementById('level' + i + '-choice1-desc').textContent = levelData.choice1.desc;
+                            
+                            document.getElementById('level' + i + '-choice2-title').textContent = levelData.choice2.title;
+                            document.getElementById('level' + i + '-choice2-desc').textContent = levelData.choice2.desc;
+                            
+                            document.getElementById('level' + i + '-choice3-title').textContent = levelData.choice3.title;
+                            document.getElementById('level' + i + '-choice3-desc').textContent = levelData.choice3.desc;
+                            
+                            // Update crystal information
+                            document.getElementById('level' + i + '-crystal').textContent = levelData.crystal;
+                            document.getElementById('level' + i + '-crystal-desc').textContent = levelData.crystalDesc;
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
